@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <title>Explore Wiki</title>
+        <meta charset="UTF-8">
+    
+        <link rel="stylesheet" href="../styles/articles.css">
+    </head>
+
+    <body onresize="resetColumnSizes()">
+        <header>
+
+            <div id="navbar">
+                <div id="splash">
+                    <img src="../images/1200px-Wikipedia_logo_outline.svg.png">
+                    <h1>Explore Wiki</h1>
+                </div>
+                <div id="links-container">
+                    <a class="nav-link" href="#">Home</a>
+                    <a class="nav-link" href="#">Articles</a>
+                    <a class="nav-link" href="#">Words</a>
+                </div>
+            </div>
+
+            <div id="searchbar">
+                <div id="search-container">
+                    <input type="text" placeholder="Search Wiki Articles">
+                </div>
+            </div>
+        </header>
+        <main id="main-area" onmouseup="endDrag()" onmousemove="onDrag(event)">
+            <div id="side-info">
+
+            </div>
+            <div id="drag-bar" onmousedown="startDrag()"></div>
+            <div id="graph-area">
+                
+            </div>
+        </main>
+    </body>
+    <script src="../javascript/drag.js"></script>
+</html>
+
