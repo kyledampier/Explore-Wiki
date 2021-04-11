@@ -124,3 +124,21 @@ input::placeholder {
 }
 
 
+#graph-area {
+    height: 825px;
+    border: 1px solid lightgray;
+}
+
+#side-info {
+    max-height: 825px;
+    padding-left: 20px;
+    overflow-y: scroll;
+}
+
+#side-info > h1 {
+    color:rgb(29, 68, 242);
+}
+
+#side-info > p {
+    font-size: 18px;
+}

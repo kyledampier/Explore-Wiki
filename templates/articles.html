@@ -3,7 +3,8 @@
     <head lang="en">
         <title>Explore Wiki</title>
         <meta charset="UTF-8">
-    
+
+        <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
         <link rel="stylesheet" href="../styles/articles.css">
     </head>
 
@@ -30,14 +31,16 @@
         </header>
         <main id="main-area" onmouseup="endDrag()" onmousemove="onDrag(event)">
             <div id="side-info">
-
+                <h1>Article Title</h1>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Scelerisque in dictum non consectetur a erat. Porta nibh venenatis cras sed felis eget velit aliquet sagittis. Vestibulum morbi blandit cursus risus at. Sed pulvinar proin gravida hendrerit lectus. Dui id ornare arcu odio ut sem nulla pharetra. Sed vulputate mi sit amet mauris commodo. Aliquam etiam erat velit scelerisque in dictum non consectetur a. Diam sit amet nisl suscipit adipiscing. Eget felis eget nunc lobortis mattis aliquam faucibus purus in.</p>
+                <br>
+                <p>Dolor morbi non arcu risus quis varius quam quisque. Eu tincidunt tortor aliquam nulla facilisi cras fermentum odio eu. Euismod lacinia at quis risus sed vulputate odio ut enim. Augue interdum velit euismod in pellentesque massa placerat. Sed vulputate odio ut enim blandit. Morbi tincidunt ornare massa eget egestas purus. In iaculis nunc sed augue lacus viverra vitae. Nunc sed id semper risus. Eu nisl nunc mi ipsum faucibus vitae. Pellentesque habitant morbi tristique senectus et netus et malesuada fames. Quis blandit turpis cursus in hac habitasse platea.</p>
             </div>
             <div id="drag-bar" onmousedown="startDrag()"></div>
-            <div id="graph-area">
-                
-            </div>
+            <div id="graph-area"></div>
         </main>
     </body>
-    <script src="../javascript/drag.js"></script>
+    <script type="text/javascript" src="../javascript/drag.js"></script>
+    <script type="text/javascript" src="../javascript/graph.js"></script>
 </html>
 
