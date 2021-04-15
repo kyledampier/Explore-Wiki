@@ -10,16 +10,16 @@ import Graph from "react-graph-vis";
 // import "./network.css";
 
 function WikiGraph() {
-  var root = new WikiNode("JavaScript", "https://en.wikipedia.org/wiki/JavaScript", 0);
-  let n1 = new WikiNode("Programmng Languages", "https://en.wikipedia.org/wiki/Programming_language", 1);
+  var root = new WikiNode("JavaScript", "https://en.m.wikipedia.org/wiki/JavaScript", 0);
+  let n1 = new WikiNode("Programmng Languages", "https://en.m.wikipedia.org/wiki/Programming_language", 1);
   root.addChild(n1);
-  let n2 = new WikiNode("Python", "https://en.wikipedia.org/wiki/Python_(programming_language)", 2);
+  let n2 = new WikiNode("Python", "https://en.m.wikipedia.org/wiki/Python_(programming_language)", 2);
   root.addChild(n2);
-  let n3 = new WikiNode("HTTP", "https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol", 3); 
+  let n3 = new WikiNode("HTTP", "https://en.m.wikipedia.org/wiki/Hypertext_Transfer_Protocol", 3); 
   root.addChild(n3);
-  let n4 = new WikiNode("CSS", "https://en.wikipedia.org/wiki/CSS", 4);
+  let n4 = new WikiNode("CSS", "https://en.m.wikipedia.org/wiki/CSS", 4);
   n3.addChild(n4);
-  let n5 = new WikiNode("HTML", "https://en.wikipedia.org/wiki/HTML", 5);
+  let n5 = new WikiNode("HTML", "https://en.m.wikipedia.org/wiki/HTML", 5);
   n3.addChild(n5);
 
   const [selectedUrl, setSelectedUrl] = React.useState(root.url);
@@ -63,9 +63,10 @@ function WikiGraph() {
         else
         {
           searched[currentRoot.id] = true;
-          for (var i = 0; i < currentRoot.children.length)
+          for (var i = 0; i < currentRoot.children.length; i++)
           {
-            
+            if (!searched[currentRoot.children[i].id])
+              searchQueue.push(currentRoot.children[i]);
           }
         }
       }
@@ -74,7 +75,7 @@ function WikiGraph() {
 
   return (
     <Grid container direction="row">
-      <Grid item md={12} lg={8}>
+      <Grid item md={12} lg={7}>
         <Graph
         graph={graph}
         options={options}
@@ -82,9 +83,10 @@ function WikiGraph() {
         getNetwork={network => {
           //  if you want access to vis.js network api you can set the state in a parent component using this property
         }}
+        height="100%"
         />
       </Grid>
-      <Grid item md={12} lg={4}>
+      <Grid item md={12} lg={5}>
         <Iframe 
           url={selectedUrl}
           position="relative"
