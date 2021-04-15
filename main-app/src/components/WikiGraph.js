@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import WikiNode from "../DataStructres/WikiNode";
 import Graph from "react-graph-vis";
 
 // import "./styles.css";
@@ -7,20 +8,21 @@ import Graph from "react-graph-vis";
 // import "./network.css";
 
 function WikiGraph() {
+  var root = new WikiNode("JavaScript", "", 0);
+  let n1 = new WikiNode("Programmng Languages", "", 1);
+  root.addChild(n1);
+  let n2 = new WikiNode("Python", "", 2);
+  root.addChild(n2);
+  let n3 = new WikiNode("HTTP", "", 3); 
+  root.addChild(n3);
+  let n4 = new WikiNode("CSS", "", 4);
+  n3.addChild(n4);
+  let n5 = new WikiNode("HTML", "", 5);
+  n3.addChild(n5);
+
   const graph = {
-    nodes: [
-      { id: 1, label: "Node 1", title: "node 1 tootip text" },
-      { id: 2, label: "Node 2", title: "node 2 tootip text" },
-      { id: 3, label: "Node 3", title: "node 3 tootip text" },
-      { id: 4, label: "Node 4", title: "node 4 tootip text" },
-      { id: 5, label: "Node 5", title: "node 5 tootip text" }
-    ],
-    edges: [
-      { from: 1, to: 2 },
-      { from: 1, to: 3 },
-      { from: 2, to: 4 },
-      { from: 2, to: 5 }
-    ]
+    nodes: root.getNodes(),
+    edges: root.getEdges(),
   };
 
   const options = {
