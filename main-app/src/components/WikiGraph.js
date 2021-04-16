@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import WikiNode from "../DataStructres/WikiNode";
 import Grid from '@material-ui/core/Grid';
 import getLinks from "../WikiAPI/GetLinks";
+import getUrl from "../WikiAPI/GetUrl";
 import getCategories from "../WikiAPI/GetCategories";
 import getSearchResults from "../WikiAPI/GetSearchResults";
 import Iframe from 'react-iframe'
@@ -12,17 +13,15 @@ import Graph from "react-graph-vis";
 // need to import the vis network css in order to show tooltip
 // import "./network.css";
 
-getLinks("Albert Einstein").then((response) => {
-  console.log(response);
-});
+getUrl("Albert Einstein");
 
-getCategories("Albert Einstein").then((response) => {
-  console.log(response);
-})
+// getCategories("Albert Einstein").then((response) => {
+//   console.log(response);
+// })
 
-getSearchResults("Python").then((response) => {
-  console.log(response);
-})
+// getSearchResults("Python").then((response) => {
+//   console.log(response);
+// })
 
 
 function WikiGraph() {
