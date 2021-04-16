@@ -30,18 +30,16 @@ getUrl("Albert Einstein");
 function WikiGraph() {
   var root = new WikiNode("JavaScript", "https://en.m.wikipedia.org/wiki/JavaScript", 0);
   let n1 = new WikiNode("Programmng Languages", "https://en.m.wikipedia.org/wiki/Programming_language", 1);
-  root.addChild(n1);
+  root.addChild(n1, 1);
   let n2 = new WikiNode("Python", "https://en.m.wikipedia.org/wiki/Python_(programming_language)", 2);
-  root.addChild(n2);
+  root.addChild(n2, 2);
   let n3 = new WikiNode("HTTP", "https://en.m.wikipedia.org/wiki/Hypertext_Transfer_Protocol", 3); 
-  root.addChild(n3);
+  root.addChild(n3, 3);
   let n4 = new WikiNode("CSS", "https://en.m.wikipedia.org/wiki/CSS", 4);
-  n3.addChild(n4);
+  n3.addChild(n4, 4);
   let n5 = new WikiNode("HTML", "https://en.m.wikipedia.org/wiki/HTML", 5);
-  n3.addChild(n5);
+  n3.addChild(n5, 5);
   
-
-
   const [selectedUrl, setSelectedUrl] = React.useState(root.url);
   const [graph, setGraph] = React.useState({nodes: root.getNodes(), edges: root.getEdges() });
   const [searchTerm, setSearchTerm] = React.useState('');
@@ -61,9 +59,10 @@ function WikiGraph() {
 
 async function newSearchTermFound(event) {
     let title = selectedRootTerm.target.defaultValue;
-    var numShared = {};
+    let root = new WikiNode(title, getUrl(title), 0);
     let categories = await getCategories(title);
     let links = await getLinks(title);
+    var count = 1;
     let requests = links.map((_, i) => {
       return new Promise((resolve)  =>  {
         getCategories(links[i]).then((subcategories) => {
@@ -74,12 +73,13 @@ async function newSearchTermFound(event) {
             }
           }
           console.log(links[i], tempNumShared);
-          numShared[i] = tempNumShared;
+          root.addChild(new WikiNode(links[i], getUrl(links[i]), links[i]), tempNumShared);
+          setGraph({nodes: root.getNodes(), edges: root.getEdges() });
         });
       }).catch((error) => { console.error(error); });
     });
 
-    Promise.all(requests).then(() => { console.log(numShared); });
+    Promise.all(requests).then(() => { console.log(root.children); });
   };
 
 
