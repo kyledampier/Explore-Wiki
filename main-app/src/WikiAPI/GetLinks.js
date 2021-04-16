@@ -16,11 +16,13 @@ async function getLinks(title) {
     let response0 = await fetch(url);
     let response = await response0.json();
     console.log(response);
-    var pages = response.query.pages;
-    for (var p in pages) {
-        for (var l of pages[p].links) {
-            console.log(l.title);
-            array.push(l.title);
+    if (response.query){
+        var pages = response.query.pages;
+        for (var p in pages) {
+            for (var l of pages[p].links) {
+                console.log(l.title);
+                array.push(l.title);
+            }
         }
     }
     return array;

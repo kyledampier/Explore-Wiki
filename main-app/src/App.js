@@ -16,12 +16,6 @@ function App() {
     <Router>
     <div>
       <NavBar/>
-      <ul>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-      </ul>
-
       <Switch>
         <Route path="/">
           <WikiGraph />

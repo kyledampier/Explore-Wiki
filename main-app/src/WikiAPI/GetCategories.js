@@ -13,16 +13,30 @@ async function getCategories(title) {
     Object.keys(params).forEach(function(key){url += "&" + key + "=" + params[key];});
 
     var array = [];
-    let response0 = await fetch(url);
+    let response0 = await fetch(url, {
+        // mode: "no-cors",
+        // headers: {
+        // "Access-Control-Alow-Origin": "*",
+        // "Content-Type": "application/json"
+        // }
+    });
     let response = await response0.json();
-    console.log(response);
-    var pages = response.query.pages;
-    for (var p in pages) {
-        for (var cat of pages[p].categories) {
-            console.log(cat.title);
-            array.push(cat.title);
+    try {
+
+        if (response.query && response.query.pages) {
+            var pages = response.query.pages;
+            for (var p in pages) {
+                for (var cat of pages[p].categories) {
+                    // console.log(cat.title);
+                    array.push(cat.title);
+                }
+            }
         }
+    } catch (e) {
+        console.error(e);
     }
+
+
     return array;
 }
 

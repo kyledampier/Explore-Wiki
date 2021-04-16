@@ -6,7 +6,7 @@ async function getSearchResults(title) {
         format: "json",
         srsearch: title,
         list: "search",
-        srlimit: 1000
+        srlimit: 20
     };
 
     url = url + "?origin=*";
@@ -16,10 +16,13 @@ async function getSearchResults(title) {
     let response0 = await fetch(url);
     let response = await response0.json();
     console.log(response);
-    for (var i = 0; i < response.query.search.length; i++) {
-        array.push(response.query.search[i]);
-        console.log(response.query.search[i]);
+    if (response.query) {
+        for (var i = 0; i < response.query.search.length; i++) {
+            array.push(response.query.search[i]);
+            // console.log(response.query.search[i]);
+        }
     }
+
 
     return array;
 }

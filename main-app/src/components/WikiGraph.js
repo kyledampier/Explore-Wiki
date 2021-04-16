@@ -5,24 +5,27 @@ import Grid from '@material-ui/core/Grid';
 import getLinks from "../WikiAPI/GetLinks";
 import getCategories from "../WikiAPI/GetCategories";
 import getSearchResults from "../WikiAPI/GetSearchResults";
-import Iframe from 'react-iframe'
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import Iframe from 'react-iframe';
 import Graph from "react-graph-vis";
+import { Button } from "@material-ui/core";
 
 // import "./styles.css";
 // need to import the vis network css in order to show tooltip
 // import "./network.css";
 
-getLinks("Albert Einstein").then((response) => {
-  console.log(response);
-});
+// getLinks("Albert Einstein").then((response) => {
+//   console.log(response);
+// });
 
-getCategories("Albert Einstein").then((response) => {
-  console.log(response);
-})
+// getCategories("Albert Einstein").then((response) => {
+//   console.log(response);
+// })
 
-getSearchResults("Python").then((response) => {
-  console.log(response);
-})
+// getSearchResults("Python").then((response) => {
+//   console.log(response);
+// })
 
 
 function WikiGraph() {
@@ -37,9 +40,14 @@ function WikiGraph() {
   n3.addChild(n4);
   let n5 = new WikiNode("HTML", "https://en.m.wikipedia.org/wiki/HTML", 5);
   n3.addChild(n5);
+  
+
 
   const [selectedUrl, setSelectedUrl] = React.useState(root.url);
   const [graph, setGraph] = React.useState({nodes: root.getNodes(), edges: root.getEdges() });
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const [availableTerms, setSearchTerms] = React.useState([]);
+  const [selectedRootTerm, setSelectedRootTerm] = React.useState(null);
 
   // React.useEffect(() => {
   //   console.log("USE EFFECT CALLED");
@@ -49,6 +57,31 @@ function WikiGraph() {
   //   };
   //   setGraph(graph_);
   // });
+
+
+
+async function newSearchTermFound(event) {
+    let title = selectedRootTerm.target.defaultValue;
+    var numShared = {};
+    let categories = await getCategories(title);
+    let links = await getLinks(title);
+    let requests = links.map((_, i) => {
+      return new Promise((resolve)  =>  {
+        getCategories(links[i]).then((subcategories) => {
+          var tempNumShared = 0;
+          for (var cat in subcategories) {
+            if (cat in categories) {
+              tempNumShared++;
+            }
+          }
+          console.log(links[i], tempNumShared);
+          numShared[i] = tempNumShared;
+        });
+      }).catch((error) => { console.error(error); });
+    });
+
+    Promise.all(requests).then(() => { console.log(numShared); });
+  };
 
 
   const options = {
@@ -90,6 +123,42 @@ function WikiGraph() {
   };
 
   return (
+    <div>
+    <Autocomplete
+      id="search-box"
+      options={availableTerms}
+      getOptionLabel={(option) => option.title}
+      style={{ width: 500, marginLeft: "1rem", marginBottom: "1rem", marginTop: "1rem" }}
+      autoHighlight
+      onSelect={setSelectedRootTerm}
+      renderInput={(params) => 
+        <div>
+        <TextField {...params} 
+          label="Search" 
+          variant="outlined"
+          value={searchTerm}
+          onChange={(event) => {
+            setSearchTerm(event.target.value);
+            try {
+              getSearchResults(event.target.value).then((response) => {
+                setSearchTerms(response);
+              })
+            } catch (e) {
+              console.error(e);
+            }
+          }} />
+        <Button 
+        onClick={newSearchTermFound}
+        variant="outlined"
+        > 
+        Search
+        </Button>
+        </div>
+      }
+    />
+
+
+
     <Grid container direction="row">
       <Grid item md={12} lg={7}>
         <Graph
@@ -113,7 +182,7 @@ function WikiGraph() {
           frameBorder={1}/>
       </Grid>
     </Grid>
-
+  </div>
   );
 }
 
