@@ -6,8 +6,8 @@ class WikiNode {
         this.children = new Array();
     }
 
-    addChild(node) {
-        this.children.push(node);
+    addChild(node, numShared) {
+        this.children.push({node: node, numShared: numShared});
     }
 
     removeChild(node) {
@@ -29,7 +29,7 @@ class WikiNode {
         // Get all other nodes
         for (var i = 0; i < this.children.length; i++)
         {
-            let node = this.children[i];
+            let node = this.children[i].node;
             let childNodes = node.getNodes();
             for (var j = 0; j < childNodes.length; j++)
                 output.push(childNodes[j]);
@@ -43,9 +43,9 @@ class WikiNode {
         { 
             var n = {};
             n['from'] = this.id;
-            n['to'] = this.children[i].id;
+            n['to'] = this.children[i].node.id;
             output.push(n);
-            var childEdges = this.children[i].getEdges();
+            var childEdges = this.children[i].node.getEdges();
             for (var j = 0; j < childEdges.length; j++)
             {
                 output.push(childEdges[j]);

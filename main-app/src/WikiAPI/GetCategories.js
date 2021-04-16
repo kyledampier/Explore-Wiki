@@ -13,13 +13,7 @@ async function getCategories(title) {
     Object.keys(params).forEach(function(key){url += "&" + key + "=" + params[key];});
 
     var array = [];
-    let response0 = await fetch(url, {
-        // mode: "no-cors",
-        // headers: {
-        // "Access-Control-Alow-Origin": "*",
-        // "Content-Type": "application/json"
-        // }
-    });
+    let response0 = await fetch(url);
     let response = await response0.json();
     try {
 
@@ -33,7 +27,8 @@ async function getCategories(title) {
             }
         }
     } catch (e) {
-        console.error(e);
+        console.log("ERROR");
+        // console.error(e);
     }
 
 
