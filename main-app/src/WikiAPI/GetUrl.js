@@ -1,6 +1,6 @@
 async function getUrl(title) {
 
-    let url = "https://en.wikipedia.org/w/api.php"
+    let url = "https://en.m.wikipedia.org/w/api.php"
 
     let params = {
         action: "query",
