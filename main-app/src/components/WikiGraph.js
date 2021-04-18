@@ -111,10 +111,10 @@ async function newSearchTermFound(event) {
         else
         {
           searched[currentRoot.id] = true;
-          for (var i = 0; i < currentRoot.children.length; i++)
+          for (var i = 0; i < Object.keys(currentRoot.children).length; i++)
           {
-            if (!searched[currentRoot.children[i].id])
-              searchQueue.push(currentRoot.children[i]);
+            if (!searched[currentRoot.children[i].node.id])
+              searchQueue.push(currentRoot.children[i].node);
           }
         }
       }
