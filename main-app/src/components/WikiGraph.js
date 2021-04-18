@@ -15,6 +15,8 @@ import { Button } from "@material-ui/core";
 function WikiGraph() {
   var root = new WikiNode("JavaScript", "https://en.m.wikipedia.org/wiki/JavaScript", 69);
   
+
+
   const [selectedUrl, setSelectedUrl] = React.useState(root.url);
   const [graph, setGraph] = React.useState({ nodes: [], edges: [] });
   const [searchTerm, setSearchTerm] = React.useState('');
@@ -65,10 +67,10 @@ function WikiGraph() {
         else
         {
           searched[currentRoot.id] = true;
-          for (var i = 0; i < Object.keys(currentRoot.children).length; i++)
+          for (var i = 0; i < currentRoot.children.length; i++)
           {
-            if (!searched[currentRoot.children[i].node.id])
-              searchQueue.push(currentRoot.children[i].node);
+            if (!searched[currentRoot.children[i].id])
+              searchQueue.push(currentRoot.children[i]);
           }
         }
       }
