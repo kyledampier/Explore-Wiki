@@ -6,7 +6,7 @@ async function getLinks(title) {
         format: "json",
         titles: title,
         prop: "links",
-        pllimit: 1000
+        pllimit: 20
     };
 
     url = url + "?origin=*";
@@ -20,7 +20,7 @@ async function getLinks(title) {
         var pages = response.query.pages;
         for (var p in pages) {
             for (var l of pages[p].links) {
-                console.log(l.title);
+                // console.log(l.title);
                 array.push(l.title);
             }
         }

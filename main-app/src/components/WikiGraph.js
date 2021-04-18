@@ -12,74 +12,28 @@ import Iframe from 'react-iframe';
 import Graph from "react-graph-vis";
 import { Button } from "@material-ui/core";
 
-// import "./styles.css";
-// need to import the vis network css in order to show tooltip
-// import "./network.css";
-
-getUrl("Albert Einstein");
-
-// getCategories("Albert Einstein").then((response) => {
-//   console.log(response);
-// })
-
-// getSearchResults("Python").then((response) => {
-//   console.log(response);
-// })
-
-
 function WikiGraph() {
-  var root = new WikiNode("JavaScript", "https://en.m.wikipedia.org/wiki/JavaScript", 0);
-  let n1 = new WikiNode("Programmng Languages", "https://en.m.wikipedia.org/wiki/Programming_language", 1);
-  root.addChild(n1, 1);
-  let n2 = new WikiNode("Python", "https://en.m.wikipedia.org/wiki/Python_(programming_language)", 2);
-  root.addChild(n2, 2);
-  let n3 = new WikiNode("HTTP", "https://en.m.wikipedia.org/wiki/Hypertext_Transfer_Protocol", 3); 
-  root.addChild(n3, 3);
-  let n4 = new WikiNode("CSS", "https://en.m.wikipedia.org/wiki/CSS", 4);
-  n3.addChild(n4, 4);
-  let n5 = new WikiNode("HTML", "https://en.m.wikipedia.org/wiki/HTML", 5);
-  n3.addChild(n5, 5);
+  var root = new WikiNode("JavaScript", "https://en.m.wikipedia.org/wiki/JavaScript", 69);
   
   const [selectedUrl, setSelectedUrl] = React.useState(root.url);
-  const [graph, setGraph] = React.useState({nodes: root.getNodes(), edges: root.getEdges() });
+  const [graph, setGraph] = React.useState({ nodes: [], edges: [] });
   const [searchTerm, setSearchTerm] = React.useState('');
   const [availableTerms, setSearchTerms] = React.useState([]);
   const [selectedRootTerm, setSelectedRootTerm] = React.useState(null);
 
-  // React.useEffect(() => {
-  //   console.log("USE EFFECT CALLED");
-  //   const graph_ = {
-  //     nodes: root.getNodes(),
-  //     edges: root.getEdges(),
-  //   };
-  //   setGraph(graph_);
-  // });
-
-
-
-async function newSearchTermFound(event) {
+  async function newSearchTermFound(event) {
     let title = selectedRootTerm.target.defaultValue;
-    let root = new WikiNode(title, getUrl(title), 0);
-    let categories = await getCategories(title);
-    let links = await getLinks(title);
-    var count = 1;
-    let requests = links.map((_, i) => {
-      return new Promise((resolve)  =>  {
-        getCategories(links[i]).then((subcategories) => {
-          var tempNumShared = 0;
-          for (var cat in subcategories) {
-            if (cat in categories) {
-              tempNumShared++;
-            }
-          }
-          console.log(links[i], tempNumShared);
-          root.addChild(new WikiNode(links[i], getUrl(links[i]), links[i]), tempNumShared);
-          setGraph({nodes: root.getNodes(), edges: root.getEdges() });
+    let root = new WikiNode(title, getUrl(title), title);
+    let requests = await root.getChildren();
+    Promise.allSettled(requests)
+      .then((resp) => {
+        console.log(root.getNodes());
+        setGraph({
+          nodes: root.getNodes(), 
+          edges: root.getEdges() 
         });
-      }).catch((error) => { console.error(error); });
-    });
-
-    Promise.all(requests).then(() => { console.log(root.children); });
+      })
+      .catch((e) => { console.error(e); });
   };
 
 
@@ -90,7 +44,7 @@ async function newSearchTermFound(event) {
     edges: {
       color: "#000000"
     },
-    height: "500px"
+    height: "700px"
   };
 
   const events = {

@@ -6,7 +6,7 @@ async function getCategories(title) {
         format: "json",
         titles: title,
         prop: "categories",
-        cllimit: 1000
+        cllimit: 20
     };
 
     url = url + "?origin=*";
@@ -16,21 +16,17 @@ async function getCategories(title) {
     let response0 = await fetch(url);
     let response = await response0.json();
     try {
-
         if (response.query && response.query.pages) {
             var pages = response.query.pages;
             for (var p in pages) {
                 for (var cat of pages[p].categories) {
-                    // console.log(cat.title);
                     array.push(cat.title);
                 }
             }
         }
     } catch (e) {
         console.log("ERROR");
-        // console.error(e);
     }
-
 
     return array;
 }
