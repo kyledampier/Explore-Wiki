@@ -85,9 +85,9 @@ class WikiNode {
         { 
             var n = {};
             n['from'] = this.id;
-            n['to'] = this.children[i].id;
+            n['to'] = this.children[i].node.id;
             output.push(n);
-            var childEdges = this.children[i].getEdges();
+            var childEdges = this.children[i].node.getEdges();
             for (var j = 0; j < childEdges.length; j++)
             {
                 output.push(childEdges[j]);
