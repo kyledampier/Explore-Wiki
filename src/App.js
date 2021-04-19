@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import NavBar from './components/NavBar';
 import WikiGraph from './components/WikiGraph';
+import WikiConnect from './components/WikiConnect';
 import {
   BrowserRouter as Router,
   Switch,
@@ -17,6 +18,9 @@ function App() {
     <div>
       <NavBar/>
       <Switch>
+        <Route path="/search">
+          <WikiConnect />
+        </Route>
         <Route path="/">
           <WikiGraph />
         </Route>

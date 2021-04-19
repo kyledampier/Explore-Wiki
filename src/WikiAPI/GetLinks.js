@@ -1,4 +1,4 @@
-async function getLinks(title) {
+async function getLinks(title, limit=500) {
     var url = "https://en.wikipedia.org/w/api.php"; 
 
     var params = {
@@ -6,7 +6,7 @@ async function getLinks(title) {
         format: "json",
         titles: title,
         prop: "links",
-        pllimit: 500
+        pllimit: limit
     };
 
     url = url + "?origin=*";
