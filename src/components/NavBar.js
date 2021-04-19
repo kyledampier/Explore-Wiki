@@ -3,6 +3,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
+import Link from '@material-ui/core/Link';
 import InputBase from '@material-ui/core/InputBase';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -12,11 +13,15 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
+  navLinks: {
+    marginRight: 12,
+    textDecoration: 'none'
+  },
   menuButton: {
     marginRight: theme.spacing(2),
   },
   title: {
-    flexGrow: 1,
+    marginRight: 25,
     display: 'none',
     [theme.breakpoints.up('sm')]: {
       display: 'block',
@@ -70,30 +75,15 @@ export default function SearchAppBar() {
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          {/* <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="open drawer"
-          >
-            <MenuIcon />
-          </IconButton> */}
-          <Typography className={classes.title} variant="h6" noWrap>
+          <Typography className={classes.title} variant="h4" noWrap>
             Explore-Wiki
           </Typography>
-          {/* <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            /> 
-          </div>*/}
+          <Typography className={classes.navLinks}>
+            <Link href="/" style={{ textDecoration: 'none' }} color="inherit">Home</Link>
+          </Typography>
+          <Typography className={classes.navLinks}>
+            <Link href="search" style={{ textDecoration: 'none' }} color="inherit">Connection</Link>
+          </Typography>
         </Toolbar>
       </AppBar>
     </div>
