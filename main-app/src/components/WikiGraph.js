@@ -150,13 +150,14 @@ function WikiGraph() {
         
         <Grid item xs={3}>
           <Typography id="non-linear-slider" gutterBottom>
-            Number of children
+            Number of children: {numToKeep}
           </Typography>
           <Slider
             value={numToKeep}
+            marks
             min={2}
             step={1}
-            max={50}
+            max={25}
             onChange={handleNumToKeepChange}
             valueLabelDisplay="auto"
             aria-labelledby="num-to-keep-slider"
