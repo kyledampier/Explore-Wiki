@@ -60,7 +60,6 @@ class WikiNode {
     async getChildren() {
       let categories = await getCategories(this.title);
       let links = await getLinks(this.title);
-      var numToKeep = 5;
       // [<number of shared categories>, <title>]
       var sortableArray = [];
       let requests = links.map((_, i) => {

@@ -6,7 +6,7 @@ async function getSearchResults(title) {
         format: "json",
         srsearch: title,
         list: "search",
-        srlimit: 20
+        srlimit: 50
     };
 
     url = url + "?origin=*";

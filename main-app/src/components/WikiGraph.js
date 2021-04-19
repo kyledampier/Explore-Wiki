@@ -4,7 +4,7 @@ import WikiNode from "../DataStructres/WikiNode";
 import Grid from '@material-ui/core/Grid';
 import getLinks from "../WikiAPI/GetLinks";
 import getUrl from "../WikiAPI/GetUrl";
-import getCategories from "../WikiAPI/GetCategories";
+import Slider from '@material-ui/core/Slider';
 import DFS from '../DataStructres/DFS';
 import getSearchResults from "../WikiAPI/GetSearchResults";
 import TextField from '@material-ui/core/TextField';
@@ -16,8 +16,7 @@ import { Button } from "@material-ui/core";
 
 function WikiGraph() {
 
-  const numToKeep = 5;
-
+  const [numToKeep, setNumToKeep] = React.useState(5);
   const [root, setRoot] = React.useState(null);
   const [selectedUrl, setSelectedUrl] = React.useState("https://wikipedia.com");
   const [graph, setGraph] = React.useState({ nodes: [], edges: [] });
@@ -25,6 +24,10 @@ function WikiGraph() {
   const [availableTerms, setSearchTerms] = React.useState([]);
   const [selectedRootTerm, setSelectedRootTerm] = React.useState(null);
   const [network, setNetwork] = React.useState(null);
+
+  const handleNumToKeepChange = (_, value) => {
+    setNumToKeep(value);
+  };
 
   async function newSearchTermFound(event) {
     let title = selectedRootTerm.target.defaultValue;
@@ -44,9 +47,9 @@ function WikiGraph() {
 
 
   const options = {
-    // layout: {
-    //   hierarchical: true
-    // },
+    layout: {
+      hierarchical: true
+    },
     edges: {
       color: "#000000"
     },
@@ -67,18 +70,19 @@ function WikiGraph() {
     doubleClick: async function (event) {
       var {nodes, edges} = event;
       let result = DFS(root, nodes[0]);
-      console.log("DOUBLE CLICK", result.title);
 
       let [requests, sortableArray] = await result.getChildren();
       Promise.allSettled(requests).then((_) => {
         sortableArray.sort((a,b) => b[0] - a[0]);
         
-        for (var i = 0; i < numToKeep; i++)
-          result.addChild(new WikiNode(sortableArray[i][1], getUrl(sortableArray[i][1]), sortableArray[i][1]), sortableArray[i][0]);
+        if (!(result.children.length > 1)) {
+          for (var i = 0; i < numToKeep; i++)
+            result.addChild(new WikiNode(sortableArray[i][1], getUrl(sortableArray[i][1]), sortableArray[i][1]), sortableArray[i][0]);
 
-        if (network) {
-          network.body.data.nodes.update(result.getNodes());
-          network.body.data.edges.update(result.getEdges());
+          if (network) {
+            network.body.data.nodes.update(result.getNodes());
+            network.body.data.edges.update(result.getEdges());
+          }
         }
       });
 
@@ -87,48 +91,80 @@ function WikiGraph() {
 
   return (
     <div>
-    <Autocomplete
-      id="search-box"
-      options={availableTerms}
-      getOptionLabel={(option) => option.title}
-      style={{ width: 500, marginLeft: "1rem", marginBottom: "1rem", marginTop: "1rem" }}
-      autoHighlight
-      onSelect={setSelectedRootTerm}
-      renderInput={(params) => 
-        <div>
-        <TextField {...params} 
-          label="Search" 
-          variant="outlined"
-          value={searchTerm}
-          onChange={(event) => {
-            setSearchTerm(event.target.value);
-            try {
-              getSearchResults(event.target.value).then((response) => {
-                setSearchTerms(response);
-              })
-            } catch (e) {
-              console.error(e);
-            }
-          }} />
-        <Button 
-        onClick={newSearchTermFound}
-        variant="outlined"
-        > 
-        Search
-        </Button>
-        </div>
-      }
-    />
 
       {!root && 
       <Grid container>
         <Grid item>
           <Typography variant="h4" component="h1">
-            Enter a search term
+            Enter a search term:
           </Typography>
         </Grid>
+      </Grid> }
+
+      <Grid 
+      conatiner 
+      justify="space-around">
+        <Grid item xs={6}>
+          <Autocomplete
+            id="search-box"
+            options={availableTerms}
+            getOptionLabel={(option) => option.title}
+            style={{ width: "100%", marginLeft: "1rem", marginBottom: "1rem", marginTop: "1rem" }}
+            autoHighlight
+            onSelect={setSelectedRootTerm}
+            renderInput={(params) => 
+              <Grid 
+              conatiner 
+              direction="row"
+              justify="space-around"> 
+                <Grid item xs={8}>           
+                  <TextField {...params} 
+                    label="Search" 
+                    variant="outlined"
+                    value={searchTerm}
+                    display="inline"
+                    onChange={(event) => {
+                      setSearchTerm(event.target.value);
+                      try {
+                        getSearchResults(event.target.value).then((response) => {
+                          setSearchTerms(response);
+                        })
+                      } catch (e) {
+                        console.error(e);
+                      }
+                    }} />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Button 
+                    onClick={newSearchTermFound}
+                    variant="outlined"
+                    display="inline"
+                    > 
+                    Search
+                    </Button>
+                  </Grid>
+              </Grid>
+            }
+          />
+        </Grid>
+        
+        <Grid item xs={3}>
+          <Typography id="non-linear-slider" gutterBottom>
+            Number of children
+          </Typography>
+          <Slider
+            value={numToKeep}
+            min={2}
+            step={1}
+            max={50}
+            onChange={handleNumToKeepChange}
+            valueLabelDisplay="auto"
+            aria-labelledby="num-to-keep-slider"
+          />
+        </Grid>
+
       </Grid>
-      }
+
     {root &&
     <Grid container direction="row">
       <Grid item md={12} lg={7}>

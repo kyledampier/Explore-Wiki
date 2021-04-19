@@ -6,7 +6,7 @@ async function getLinks(title) {
         format: "json",
         titles: title,
         prop: "links",
-        pllimit: 20
+        pllimit: 500
     };
 
     url = url + "?origin=*";

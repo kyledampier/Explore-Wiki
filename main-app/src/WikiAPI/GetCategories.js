@@ -6,7 +6,7 @@ async function getCategories(title) {
         format: "json",
         titles: title,
         prop: "categories",
-        cllimit: 20
+        cllimit: 500
     };
 
     url = url + "?origin=*";
