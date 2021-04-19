@@ -11,12 +11,24 @@ class WikiNode {
       this.url = url;
       this.id = currentValue++;
       this.children = new Array();
+      this.path = [title];
     }
 
     addChild(node, numShared) {
       this.children.push({
         node: node, 
         numShared: numShared
+      });
+    }
+
+    addChildWithPath(node, path) {
+      let temp = [...path];
+      temp.push(node.title);
+      this.path = temp;
+      console.log(this.path);
+      this.children.push({
+        node: node, 
+        numShared: 0
       });
     }
 
