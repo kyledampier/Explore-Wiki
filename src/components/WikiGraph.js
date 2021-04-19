@@ -98,9 +98,7 @@ function WikiGraph() {
       {root && 
       <Grid container>
         <Grid item style={{marginLeft: "1rem", marginTop: "1rem"}}>
-          <Typography variant="h4" component="h3">
-            Enter a search term:
-          </Typography>
+         
         </Grid>
       </Grid> }
 
@@ -117,7 +115,7 @@ function WikiGraph() {
               <Grid conatiner> 
                 <Grid item>           
                   <TextField {...params} 
-                    label="Search" 
+                    label="Search Wiki Articles" 
                     variant="outlined"
                     value={searchTerm}
                     display="inline"
@@ -174,7 +172,6 @@ function WikiGraph() {
         />
       </Grid>
       
-      {root != 1 &&
       <Grid item md={12} lg={5}>
         <Iframe 
           url={selectedUrl}
@@ -185,8 +182,7 @@ function WikiGraph() {
           id="wikiFrame"
           frameBorder={1}/>
       </Grid>
-      }
-
+    
     </Grid>}
   </div>
   );
