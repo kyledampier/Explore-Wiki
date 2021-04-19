@@ -15,16 +15,21 @@ async function getLinks(title, limit=500) {
     var array = [];
     let response0 = await fetch(url);
     let response = await response0.json();
-    console.log(response);
-    if (response.query){
-        var pages = response.query.pages;
-        for (var p in pages) {
-            for (var l of pages[p].links) {
-                // console.log(l.title);
-                array.push(l.title);
+    try {
+        if (response.query){
+            var pages = response.query.pages;
+            // console.log(pages);
+            for (var p in pages) {
+                for (var l of pages[p].links) {
+                    // console.log(l.title);
+                    array.push(l.title);
+                }
             }
         }
+    } catch (e) {
+        console.log("ERROR", e);
     }
+
     return array;
 }
 

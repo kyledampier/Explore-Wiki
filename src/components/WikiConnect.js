@@ -110,7 +110,9 @@ class WikiConnect extends React.Component {
                 </Grid>
                 <Grid item md={12} alignContent="center">
                     <Button onClick={() => {
-                        let result = findPath(this.selectedRootNode1, this.selectedRootNode2);
+                        findPath(this.selectedRootNode1, this.selectedRootNode2).then((result) => {
+                            console.log("!!!!!!! RESULT !!!!!!!", result);
+                        });
                     }}
                     variant="outlined"
                     color="primary"
