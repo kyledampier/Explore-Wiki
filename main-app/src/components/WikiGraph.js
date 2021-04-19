@@ -17,7 +17,7 @@ import { Button } from "@material-ui/core";
 function WikiGraph() {
 
   const [numToKeep, setNumToKeep] = React.useState(5);
-  const [root, setRoot] = React.useState(null);
+  const [root, setRoot] = React.useState(1);
   const [selectedUrl, setSelectedUrl] = React.useState("https://wikipedia.com");
   const [graph, setGraph] = React.useState({ nodes: [], edges: [] });
   const [searchTerm, setSearchTerm] = React.useState('');
@@ -30,6 +30,9 @@ function WikiGraph() {
   };
 
   async function newSearchTermFound(event) {
+
+    console.log(network);
+
     let title = selectedRootTerm.target.defaultValue;
     var newRoot = new WikiNode(title, getUrl(title), title);
     let [requests, sortableArray] = await newRoot.getChildren();
@@ -92,7 +95,7 @@ function WikiGraph() {
   return (
     <div>
 
-      {!root && 
+      {root && 
       <Grid container>
         <Grid item style={{marginLeft: "1rem", marginTop: "1rem"}}>
           <Typography variant="h4" component="h3">
@@ -170,6 +173,8 @@ function WikiGraph() {
         height="100%"
         />
       </Grid>
+      
+      {root != 1 &&
       <Grid item md={12} lg={5}>
         <Iframe 
           url={selectedUrl}
@@ -180,6 +185,8 @@ function WikiGraph() {
           id="wikiFrame"
           frameBorder={1}/>
       </Grid>
+      }
+
     </Grid>}
   </div>
   );
