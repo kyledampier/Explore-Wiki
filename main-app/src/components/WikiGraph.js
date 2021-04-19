@@ -94,17 +94,15 @@ function WikiGraph() {
 
       {!root && 
       <Grid container>
-        <Grid item>
-          <Typography variant="h4" component="h1">
+        <Grid item style={{marginLeft: "1rem", marginTop: "1rem"}}>
+          <Typography variant="h4" component="h3">
             Enter a search term:
           </Typography>
         </Grid>
       </Grid> }
 
-      <Grid 
-      conatiner 
-      justify="space-around">
-        <Grid item xs={6}>
+      <Grid container spacing={3} alignItems="center">
+        <Grid item xs={3}>
           <Autocomplete
             id="search-box"
             options={availableTerms}
@@ -113,11 +111,8 @@ function WikiGraph() {
             autoHighlight
             onSelect={setSelectedRootTerm}
             renderInput={(params) => 
-              <Grid 
-              conatiner 
-              direction="row"
-              justify="space-around"> 
-                <Grid item xs={8}>           
+              <Grid conatiner> 
+                <Grid item>           
                   <TextField {...params} 
                     label="Search" 
                     variant="outlined"
@@ -134,18 +129,13 @@ function WikiGraph() {
                       }
                     }} />
                   </Grid>
-                  <Grid item xs={4}>
-                    <Button 
-                    onClick={newSearchTermFound}
-                    variant="outlined"
-                    display="inline"
-                    > 
-                    Search
-                    </Button>
-                  </Grid>
               </Grid>
             }
           />
+        </Grid>
+
+        <Grid item>
+          <Button onClick={newSearchTermFound} variant="outlined" display="inline">Search</Button>
         </Grid>
         
         <Grid item xs={3}>
