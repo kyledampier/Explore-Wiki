@@ -41,8 +41,10 @@ class WikiNode {
       {
         let node = this.children[i].node;
         let childNodes = node.getNodes();
-        for (var j = 0; j < childNodes.length; j++)
-            output.push(childNodes[j]);
+        for (var j = 0; j < childNodes.length; j++) {
+          childNodes[j]['group'] = this.title;
+          output.push(childNodes[j]);
+        }
       }
 
       var seen = new Set();
@@ -58,6 +60,9 @@ class WikiNode {
     async getChildren() {
       let categories = await getCategories(this.title);
       let links = await getLinks(this.title);
+      var numToKeep = 5;
+      // [<number of shared categories>, <title>]
+      var sortableArray = [];
       let requests = links.map((_, i) => {
         return new Promise((resolve)  =>  {
           getCategories(links[i]).then((subcategories) => {
@@ -67,16 +72,20 @@ class WikiNode {
                 tempNumShared++;
               }
             }
-            // console.log(links[i], tempNumShared);
-            this.addChild(new WikiNode(links[i], getUrl(links[i]), links[i]), tempNumShared);
+            console.log(links[i], tempNumShared);
+            var tempTuple = [tempNumShared, links[i]];
+            sortableArray.push(tempTuple);
+
             resolve();
           }).catch((error) => { 
             console.log(error); 
             resolve(); 
           });
         });
+
       });
-      return requests;
+
+      return [requests, sortableArray];
     }
 
     getEdges() {

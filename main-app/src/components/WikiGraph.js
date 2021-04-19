@@ -5,37 +5,41 @@ import Grid from '@material-ui/core/Grid';
 import getLinks from "../WikiAPI/GetLinks";
 import getUrl from "../WikiAPI/GetUrl";
 import getCategories from "../WikiAPI/GetCategories";
+import DFS from '../DataStructres/DFS';
 import getSearchResults from "../WikiAPI/GetSearchResults";
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import Typography from '@material-ui/core/Typography';
 import Iframe from 'react-iframe';
 import Graph from "react-graph-vis";
 import { Button } from "@material-ui/core";
 
 function WikiGraph() {
-  var root = new WikiNode("JavaScript", "https://en.m.wikipedia.org/wiki/JavaScript", 69);
-  
 
+  const numToKeep = 5;
 
-  const [selectedUrl, setSelectedUrl] = React.useState(root.url);
+  const [root, setRoot] = React.useState(null);
+  const [selectedUrl, setSelectedUrl] = React.useState("https://wikipedia.com");
   const [graph, setGraph] = React.useState({ nodes: [], edges: [] });
   const [searchTerm, setSearchTerm] = React.useState('');
   const [availableTerms, setSearchTerms] = React.useState([]);
   const [selectedRootTerm, setSelectedRootTerm] = React.useState(null);
+  const [network, setNetwork] = React.useState(null);
 
   async function newSearchTermFound(event) {
     let title = selectedRootTerm.target.defaultValue;
-    let root = new WikiNode(title, getUrl(title), title);
-    let requests = await root.getChildren();
-    Promise.allSettled(requests)
-      .then((resp) => {
-        console.log(root.getNodes());
-        setGraph({
-          nodes: root.getNodes(), 
-          edges: root.getEdges() 
-        });
-      })
-      .catch((e) => { console.error(e); });
+    var newRoot = new WikiNode(title, getUrl(title), title);
+    let [requests, sortableArray] = await newRoot.getChildren();
+    Promise.allSettled(requests).then((_) => {
+      sortableArray.sort((a,b) => b[0] - a[0]);
+      for (var i = 0; i < numToKeep; i++)
+        newRoot.addChild(new WikiNode(sortableArray[i][1], getUrl(sortableArray[i][1]), sortableArray[i][1]), sortableArray[i][0]);
+      if (network) {
+        network.body.data.nodes.update(newRoot.getNodes());
+        network.body.data.edges.update(newRoot.getEdges());
+      }
+      setRoot(newRoot);
+    });
   };
 
 
@@ -52,28 +56,32 @@ function WikiGraph() {
   const events = {
     select: function(event) {
       var { nodes, edges } = event;
-      console.log(nodes);
 
-      var searched = [];
-      var searchQueue = [];
-      searchQueue.push(root);
-
-      while (searchQueue.length > 0)
+      if (nodes)
       {
-        let currentRoot = searchQueue.shift();
-
-        if (nodes[0] == currentRoot.id)
-          setSelectedUrl(currentRoot.url);
-        else
-        {
-          searched[currentRoot.id] = true;
-          for (var i = 0; i < currentRoot.children.length; i++)
-          {
-            if (!searched[currentRoot.children[i].id])
-              searchQueue.push(currentRoot.children[i]);
-          }
-        }
+        let result = DFS(root, nodes[0]);
+        if (result && result.url != undefined)
+          setSelectedUrl(result.url);
       }
+    },
+    doubleClick: async function (event) {
+      var {nodes, edges} = event;
+      let result = DFS(root, nodes[0]);
+      console.log("DOUBLE CLICK", result.title);
+
+      let [requests, sortableArray] = await result.getChildren();
+      Promise.allSettled(requests).then((_) => {
+        sortableArray.sort((a,b) => b[0] - a[0]);
+        
+        for (var i = 0; i < numToKeep; i++)
+          result.addChild(new WikiNode(sortableArray[i][1], getUrl(sortableArray[i][1]), sortableArray[i][1]), sortableArray[i][0]);
+
+        if (network) {
+          network.body.data.nodes.update(result.getNodes());
+          network.body.data.edges.update(result.getEdges());
+        }
+      });
+
     }
   };
 
@@ -112,8 +120,16 @@ function WikiGraph() {
       }
     />
 
-
-
+      {!root && 
+      <Grid container>
+        <Grid item>
+          <Typography variant="h4" component="h1">
+            Enter a search term
+          </Typography>
+        </Grid>
+      </Grid>
+      }
+    {root &&
     <Grid container direction="row">
       <Grid item md={12} lg={7}>
         <Graph
@@ -122,6 +138,7 @@ function WikiGraph() {
         events={events}
         getNetwork={network => {
           //  if you want access to vis.js network api you can set the state in a parent component using this property
+          setNetwork(network);
         }}
         height="100%"
         />
@@ -136,7 +153,7 @@ function WikiGraph() {
           id="wikiFrame"
           frameBorder={1}/>
       </Grid>
-    </Grid>
+    </Grid>}
   </div>
   );
 }

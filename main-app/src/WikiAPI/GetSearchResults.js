@@ -15,7 +15,7 @@ async function getSearchResults(title) {
     var array = [];
     let response0 = await fetch(url);
     let response = await response0.json();
-    console.log(response);
+    // console.log(response);
     if (response.query) {
         for (var i = 0; i < response.query.search.length; i++) {
             array.push(response.query.search[i]);
