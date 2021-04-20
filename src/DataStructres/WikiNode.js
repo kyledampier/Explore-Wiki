@@ -83,7 +83,7 @@ class WikiNode {
                 tempNumShared++;
               }
             }
-            console.log(links[i], tempNumShared);
+            // console.log(links[i], tempNumShared);
             var tempTuple = [tempNumShared, links[i]];
             sortableArray.push(tempTuple);
 

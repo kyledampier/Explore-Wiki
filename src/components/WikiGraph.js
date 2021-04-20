@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import Iframe from 'react-iframe';
 import Graph from "react-graph-vis";
 import { Button } from "@material-ui/core";
+import Switch from '@material-ui/core/Switch';
 
 function WikiGraph() {
 
@@ -30,9 +31,8 @@ function WikiGraph() {
   };
 
   async function newSearchTermFound(event) {
-
     console.log(network);
-
+    
     let title = selectedRootTerm.target.defaultValue;
     var newRoot = new WikiNode(title, getUrl(title), title);
     let [requests, sortableArray] = await newRoot.getChildren();
@@ -41,6 +41,8 @@ function WikiGraph() {
       for (var i = 0; i < numToKeep; i++)
         newRoot.addChild(new WikiNode(sortableArray[i][1], getUrl(sortableArray[i][1]), sortableArray[i][1]), sortableArray[i][0]);
       if (network) {
+        network.body.data.nodes.clear();
+        network.body.data.edges.clear();
         network.body.data.nodes.update(newRoot.getNodes());
         network.body.data.edges.update(newRoot.getEdges());
       }
@@ -48,6 +50,7 @@ function WikiGraph() {
     });
   };
 
+  
 
   const options = {
     layout: {
@@ -155,6 +158,12 @@ function WikiGraph() {
           />
         </Grid>
 
+        <Grid item>Graph</Grid>
+        <Grid item>
+          <Switch variant="outlined" display="inline">Search</Switch>
+        </Grid>
+        <Grid item>Tree</Grid>
+
       </Grid>
 
     {root &&
@@ -169,6 +178,7 @@ function WikiGraph() {
           setNetwork(network);
         }}
         height="100%"
+        vis={vis => (this.vis = vis)}
         />
       </Grid>
       
