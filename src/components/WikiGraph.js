@@ -13,7 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import Iframe from 'react-iframe';
 import Graph from "react-graph-vis";
 import { Button } from "@material-ui/core";
-import Switch from '@material-ui/core/Switch';
+import Checkbox from '@material-ui/core/Checkbox';
 
 function WikiGraph() {
 
@@ -25,14 +25,27 @@ function WikiGraph() {
   const [availableTerms, setSearchTerms] = React.useState([]);
   const [selectedRootTerm, setSelectedRootTerm] = React.useState(null);
   const [network, setNetwork] = React.useState(null);
+  const [options, setOptions] = React.useState({
+    layout: {
+      hierarchical: {
+        enabled: true,
+        direction: 'UD',
+      }
+    },
+    edges: {
+      color: "#000000"
+    },
+    height: "700px"
+  });
 
   const handleNumToKeepChange = (_, value) => {
     setNumToKeep(value);
   };
 
   async function newSearchTermFound(event) {
+
     console.log(network);
-    
+
     let title = selectedRootTerm.target.defaultValue;
     var newRoot = new WikiNode(title, getUrl(title), title);
     let [requests, sortableArray] = await newRoot.getChildren();
@@ -50,18 +63,6 @@ function WikiGraph() {
     });
   };
 
-  
-
-  const options = {
-    layout: {
-      hierarchical: true
-    },
-    edges: {
-      color: "#000000"
-    },
-    height: "700px"
-  };
-
   const events = {
     select: function(event) {
       var { nodes, edges } = event;
@@ -76,36 +77,28 @@ function WikiGraph() {
     doubleClick: async function (event) {
       var {nodes, edges} = event;
       let result = DFS(root, nodes[0]);
-
-      let [requests, sortableArray] = await result.getChildren();
-      Promise.allSettled(requests).then((_) => {
-        sortableArray.sort((a,b) => b[0] - a[0]);
-        
-        if (!(result.children.length > 1)) {
-          for (var i = 0; i < numToKeep; i++)
-            result.addChild(new WikiNode(sortableArray[i][1], getUrl(sortableArray[i][1]), sortableArray[i][1]), sortableArray[i][0]);
-
-          if (network) {
-            network.body.data.nodes.update(result.getNodes());
-            network.body.data.edges.update(result.getEdges());
+      if (result){
+        let [requests, sortableArray] = await result.getChildren();
+        Promise.allSettled(requests).then((_) => {
+          sortableArray.sort((a,b) => b[0] - a[0]);
+          
+          if (!(result.children.length > 1)) {
+            for (var i = 0; i < numToKeep; i++)
+              result.addChild(new WikiNode(sortableArray[i][1], getUrl(sortableArray[i][1]), sortableArray[i][1]), sortableArray[i][0]);
+  
+            if (network) {
+              network.body.data.nodes.update(result.getNodes());
+              network.body.data.edges.update(result.getEdges());
+            }
           }
-        }
-      });
-
+        });
+      }
     }
   };
 
   return (
     <div>
-
-      {root && 
-      <Grid container>
-        <Grid item style={{marginLeft: "1rem", marginTop: "1rem"}}>
-         
-        </Grid>
-      </Grid> }
-
-      <Grid container spacing={3} alignItems="center">
+      <Grid container spacing={3} alignItems="center" style={{marginLeft: "1rem", marginTop: "1rem"}}>
         <Grid item xs={3}>
           <Autocomplete
             id="search-box"
@@ -158,42 +151,79 @@ function WikiGraph() {
           />
         </Grid>
 
-        <Grid item>Graph</Grid>
         <Grid item>
-          <Switch variant="outlined" display="inline">Search</Switch>
+            <Checkbox 
+            checked={options.layout.hierarchical}
+            onChange={() => {
+              let newOptions = {...options};
+              newOptions.layout.hierarchical = !newOptions.layout.hierarchical;
+              console.log(network);
+              setOptions(newOptions);
+            }}
+            />
+            <Typography>Hierarchical View</Typography>
         </Grid>
-        <Grid item>Tree</Grid>
+      </Grid>
+      <Grid container direction="row">
+        {/* GRAPH IS hierarchical */}
+        {(options.layout.hierarchical && (root != 1)) && (
+          <Grid item md={12} lg={7}>
+            <Graph
+            graph={graph}
+            options={options}
+            events={events}
+            getNetwork={network => {
+              //  if you want access to vis.js network api you can set the state in a parent component using this property
+              if (network) {
+                network.body.data.nodes.clear();
+                network.body.data.edges.clear();
+                network.body.data.nodes.update(root.getNodes());
+                network.body.data.edges.update(root.getEdges());
+              }
+              setNetwork(network);
+            }}
+            height="100%"
+            />
+          </Grid>
+        )}
 
-      </Grid>
+        {/* GRAPH IS NETWORK */}
+        {(!options.layout.hierarchical && (root != 1)) && (
+          <Grid item md={12} lg={7}>
+            <Graph
+            graph={graph}
+            options={options}
+            events={events}
+            getNetwork={network => {
+              //  if you want access to vis.js network api you can set the state in a parent component using this property
+              if (network) {
+                network.body.data.nodes.clear();
+                network.body.data.edges.clear();
+                network.body.data.nodes.update(root.getNodes());
+                network.body.data.edges.update(root.getEdges());
+              }
+              setNetwork(network);
+            }}
+            height="100%"
+            />
+          </Grid>
+        )}
 
-    {root &&
-    <Grid container direction="row">
-      <Grid item md={12} lg={7}>
-        <Graph
-        graph={graph}
-        options={options}
-        events={events}
-        getNetwork={network => {
-          //  if you want access to vis.js network api you can set the state in a parent component using this property
-          setNetwork(network);
-        }}
-        height="100%"
-        vis={vis => (this.vis = vis)}
-        />
-      </Grid>
-      
-      <Grid item md={12} lg={5}>
-        <Iframe 
-          url={selectedUrl}
-          position="relative"
-          display="block"
-          width="100%"
-          height="100%"
-          id="wikiFrame"
-          frameBorder={1}/>
-      </Grid>
+        {(root != 1) && (
+          <Grid item md={12} lg={5}>
+            <Iframe 
+              url={selectedUrl}
+              position="relative"
+              display="block"
+              width="100%"
+              height="100%"
+              id="wikiFrame"
+              frameBorder={1}/>
+          </Grid>
+        )}
+
     
-    </Grid>}
+    </Grid>
   </div>
   );
 }
