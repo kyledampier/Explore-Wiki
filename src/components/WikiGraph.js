@@ -6,6 +6,7 @@ import getLinks from "../WikiAPI/GetLinks";
 import getUrl from "../WikiAPI/GetUrl";
 import Slider from '@material-ui/core/Slider';
 import DFS from '../DataStructres/DFS';
+import BFS from '../DataStructres/BFS';
 import getSearchResults from "../WikiAPI/GetSearchResults";
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -14,6 +15,7 @@ import Iframe from 'react-iframe';
 import Graph from "react-graph-vis";
 import { Button } from "@material-ui/core";
 import Checkbox from '@material-ui/core/Checkbox';
+import Switch from '@material-ui/core/Switch';
 
 function WikiGraph() {
 
@@ -69,7 +71,12 @@ function WikiGraph() {
 
       if (nodes)
       {
-        let result = DFS(root, nodes[0]);
+        let result;
+        if(options.layout.hierarchical.enabled) {
+          result = DFS(root, nodes[0]);
+        } else {
+          result = BFS(root, nodes[0]);
+        }
         if (result && result.url != undefined)
           setSelectedUrl(result.url);
       }
@@ -151,8 +158,10 @@ function WikiGraph() {
           />
         </Grid>
 
+        <Grid item>Graph</Grid>
         <Grid item>
-            <Checkbox 
+            <Switch
+            color="primary" 
             checked={options.layout.hierarchical}
             onChange={() => {
               let newOptions = {...options};
@@ -161,8 +170,8 @@ function WikiGraph() {
               setOptions(newOptions);
             }}
             />
-            <Typography>Hierarchical View</Typography>
         </Grid>
+        <Grid item>Trees</Grid>
       </Grid>
       <Grid container direction="row">
         {/* GRAPH IS hierarchical */}

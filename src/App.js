@@ -18,7 +18,7 @@ function App() {
     <div>
       <NavBar/>
       <Switch>
-        <Route path="/search">
+        <Route path="#">
           <WikiConnect />
         </Route>
         <Route path="/">
