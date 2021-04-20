@@ -74,16 +74,22 @@ class WikiNode {
       let links = await getLinks(this.title);
       // [<number of shared categories>, <title>]
       var sortableArray = [];
+
+      // map the list of titles into a list of promises
       let requests = links.map((_, i) => {
         return new Promise((resolve)  =>  {
           getCategories(links[i]).then((subcategories) => {
             var tempNumShared = 0;
+            // if category from link is in root category increase the number shared
             for (var cat in subcategories) {
               if (cat in categories) {
                 tempNumShared++;
               }
             }
-            // console.log(links[i], tempNumShared);
+
+            // add tuple to the output of the sortable array with 
+            // the number of shared categories in 0 
+            // and the title of the category
             var tempTuple = [tempNumShared, links[i]];
             sortableArray.push(tempTuple);
 
@@ -96,6 +102,8 @@ class WikiNode {
 
       });
 
+      // after mapping all the requests send the 
+      // list of promises and sortable array
       return [requests, sortableArray];
     }
 
@@ -107,6 +115,7 @@ class WikiNode {
             n['from'] = this.id;
             n['to'] = this.children[i].node.id;
             output.push(n);
+            // recusively call all its children
             var childEdges = this.children[i].node.getEdges();
             for (var j = 0; j < childEdges.length; j++)
             {
